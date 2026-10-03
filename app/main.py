@@ -1,6 +1,7 @@
 """Command-line entry point for NetSentinel."""
 
 import argparse
+import time
 
 from app.scanner.port_scanner import DEFAULT_PORTS, scan_ports
 
@@ -31,12 +32,17 @@ def main() -> None:
     if args.timeout <= 0:
         parser.error("--timeout must be greater than zero")
 
+
     print("NetSentinel v0.1")
     print(f"Target: {args.target}")
+    start_time = time.perf_counter()
     print("Scanning...\n")
     print("PORT\tSTATUS")
     for port, is_open in scan_ports(args.target, args.ports, args.timeout):
         print(f"{port}\t{'OPEN' if is_open else 'CLOSED'}")
+    
+    elapsed = time.perf_counter() - start_time
+    print(f"Scan took {elapsed:.6f} seconds.")
     print("\nScan complete.")
 
 
